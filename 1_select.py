@@ -1,11 +1,15 @@
 import socket
 from select import select
-# "select" working whith object method .fileno()
+# "select" working whith objects that contained method .fileno()
 
 
 to_monitor = []
 
-# socket == domain:port
+# Socket is domain and port.
+# It works on protocols of media layers.
+# The following protocols are sets here:
+# 3 Network layer - IP protocol (addressing by domain)
+# 4 Transport layer - TCP protocol (addressing by port)
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
