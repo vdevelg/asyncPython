@@ -29,16 +29,20 @@ def send_message(client_socket):
     request = client_socket.recv(4096)
     print(request)
 
-    if request:
-        response = 'Hello, world!\n'
+    if request == b'to_monitor\r\n':
+        response = '\r\n'.join([''] + str(to_monitor).split(', ') + [''])
         client_socket.send(response.encode())
-    else:
+    elif request == b'\r\n' or not request:
         client_socket.close()
+        to_monitor.remove(client_socket)
+    else:
+        response = 'Hello, world!\r\n'
+        client_socket.send(response.encode())
 
 
 def event_loop():
     while True:
-        ready_to_read, _, _ = select(to_monitor, [], []) # read, write, arrors
+        ready_to_read, _, _ = select(to_monitor, [], []) # read, write, errors
 
         for sock in ready_to_read:
             if sock is server_socket:
