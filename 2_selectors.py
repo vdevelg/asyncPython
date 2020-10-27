@@ -6,7 +6,6 @@ selector = selectors.DefaultSelector()
 
 
 def start_server():
-    global server_socket
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
@@ -28,7 +27,6 @@ def accept_connection(server_socket):
 
 
 def send_message(client_socket):
-    global server_socket
     request = client_socket.recv(4096)
     print(request)
     print(client_socket)
