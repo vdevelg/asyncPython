@@ -3,6 +3,8 @@ import socket
 
 
 # socket == domain:port
+# Создание сокета с протоколом сетевого уровня IPv4 и
+# протоколом транспортного уровня TCP:
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
@@ -12,16 +14,16 @@ server_socket.listen()
 
 while True:
 
-    print('Before .accept()') # БЛОКИРУЮЩИЙ МЕТОД
+    print('Before .accept()')
 
-    client_socket, client_address = server_socket.accept()
-    print('Connection from', client_address)
+    client_socket, client_address = server_socket.accept() # !!!БЛОКИРУЮЩАЯ ОПЕРАЦИЯ!!
+    print('Connected with: ', client_address)
 
     while True:
 
-        print('Before .recv()') # БЛОКИРУЮЩИЙ МЕТОД
+        print('Before .recv()')
 
-        request = client_socket.recv(4096)
+        request = client_socket.recv(4 * 1024) # !!!БЛОКИРУЮЩАЯ ОПЕРАЦИЯ!!!
         print(request)
         if not request:
             break
@@ -30,7 +32,8 @@ while True:
             continue
         else:
             response = 'Hello, world!\n'
+            # БЛОКИРУЮЩАЯ ОПЕРАЦИЯ, если буфер отправки будет полон:
             client_socket.send(response.encode())
 
-    print('Outside innet while loop')
     client_socket.close()
+    print('Disconnected from the client')
