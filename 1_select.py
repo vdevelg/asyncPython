@@ -1,6 +1,8 @@
 import socket
+import sys
 from select import select
-# "select" working whith objects that contained method .fileno()
+# "select" working whith objects 
+# that contained method .fileno()
 
 
 to_monitor = []
@@ -13,26 +15,25 @@ to_monitor = []
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-server_address = ('localhost', 5000)
+server_address = (sys.argv[1], int(sys.argv[2])) # IP and port
 server_socket.bind(server_address)
 server_socket.listen()
 
 
 def accept_connection(server_socket):
     client_socket, client_address = server_socket.accept()
-    print('Connection from', client_address)
-
     to_monitor.append(client_socket)
+    print('Connected with:', client_address)
 
 
 def send_message(client_socket):
     request = client_socket.recv(4096)
     print(request)
 
-    if request == b'to_monitor\r\n':
-        response = '\r\n'.join([''] + str(to_monitor).split(', ') + [''])
+    if request == b'to_monitor':
+        response = '\r\n'.join(str(to_monitor).split(', '))
         client_socket.send(response.encode())
-    elif request == b'\r\n' or not request:
+    elif not request or request == b'\r\n':
         client_socket.close()
         to_monitor.remove(client_socket)
     else:
@@ -49,7 +50,6 @@ def event_loop():
                 accept_connection(sock)
             else:
                 send_message(sock)
-
 
 
 if __name__ == "__main__":
