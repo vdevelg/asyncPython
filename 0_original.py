@@ -3,8 +3,8 @@ import sys
 
 
 # socket == domain:port
-# Создание сокета с протоколом сетевого уровня IPv4 и
-# протоколом транспортного уровня TCP:
+# Создание сокета с протоколом сетевого уровня IPv4
+# и протоколом транспортного уровня TCP:
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
@@ -17,7 +17,7 @@ while True:
     print('Before .accept()')
 
     client_socket, client_address = server_socket.accept() # !!!БЛОКИРУЮЩАЯ ОПЕРАЦИЯ!!!
-    print('Connected with: ', client_address)
+    print('Connected with:', client_address)
 
     while True:
 
